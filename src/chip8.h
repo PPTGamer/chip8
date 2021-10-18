@@ -39,13 +39,14 @@ private:
     private:
         std::uint16_t raw_instruction;
         /* 
-        need easy access to
-            first nibble
-            second nibble (X)
-            third nibble (Y)
-            fourth nibble (N)
-            third and fourth nibbles (NN)
-            second, third, and fourth nibbles (NNN)
+        For a 16-bit instruction
+        0xFFFF
+          O
+           X
+            Y
+             N
+            NN
+           NNN
         */
     public:
         Instruction(std::uint16_t ins) : raw_instruction(ins){};

@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -44,16 +43,9 @@ void handle_key_input(Chip8& chip8, sf::Event key_event)
 }
 
 nfdresult_t request_file(NFD::UniquePath& outPath) {
-    // initialize NFD
     NFD::Guard nfdGuard;
-
-    // prepare filters for the dialog
     nfdfilteritem_t filterItem[1] = {{"CHIP-8 program", "ch8"}};
-
-    // show the dialog
     nfdresult_t result = NFD::OpenDialog(outPath, filterItem, 1);
-
-    // NFD::Guard will automatically quit NFD.
     return result;
 }
 
@@ -61,6 +53,8 @@ int main()
 {   
     // Initialize hardware
     Chip8 chip8;
+    // Initialize display
+    sf::Color color_on = sf::Color::White;
     sf::RenderWindow window(sf::VideoMode(200, 200), "CHIP-8 Intepreter by PPTGamer"); 
     sf::RectangleShape rects[CHIP8_DISPLAY_HEIGHT][CHIP8_DISPLAY_WIDTH];
     float size = 3;
@@ -73,16 +67,17 @@ int main()
             rects[y][x].setFillColor(sf::Color::Black);
         }
     }
+    // Initialize beeper
     sf::SoundBuffer sound_buffer;
-    int nSamples = 44100; // How many samples do I need for a cycle?
-    std::int16_t samples[nSamples];
+    int num_samples = 44100; 
+    std::int16_t samples[num_samples];
     //Fill samples with a pure A tone (440hrz)
-    for (int i = 0; i < nSamples ; i++) {
+    for (int i = 0; i < num_samples ; i++) {
         samples[i] = ( 5000 * sin(440.0f * (2.0f * 3.1415f) * i / 44100));
     }
-    sound_buffer.loadFromSamples(samples, nSamples, 1, 44100);
-    sf::Sound sound(sound_buffer);
-    sound.setLoop(true);
+    sound_buffer.loadFromSamples(samples, num_samples, 1, 44100);
+    sf::Sound beeper(sound_buffer);
+    beeper.setLoop(true);
     
     // load chip8 ROM
     NFD::UniquePath outPath;
@@ -110,6 +105,10 @@ int main()
                 {
                     handle_key_input(chip8, event);
                 }
+                if (event.type == sf::Event::KeyPressed && event.key.control && event.key.code == sf::Keyboard::Key::D)
+                {
+                    chip8.mem_dump(std::cerr);
+                }
             } 
             // update chip 8
             chip8.update(main_clock.restart());
@@ -126,9 +125,9 @@ int main()
                     {
                         rects[y][x].setFillColor(
                             {
-                                (unsigned char)std::min(255, rects[y][x].getFillColor().r + 80),
-                                (unsigned char)std::min(255, rects[y][x].getFillColor().g + 80),
-                                (unsigned char)std::min(255, rects[y][x].getFillColor().b + 80)
+                                (unsigned char)std::min(255, (int)(rects[y][x].getFillColor().r + 0.3 * color_on.r)),
+                                (unsigned char)std::min(255, (int)(rects[y][x].getFillColor().g + 0.3 * color_on.g)),
+                                (unsigned char)std::min(255, (int)(rects[y][x].getFillColor().b + 0.3 * color_on.b))
                             });
                     }
                     else
@@ -146,11 +145,11 @@ int main()
             window.display();
             if (sound_flag)
             {
-                sound.play();
+                beeper.play();
             }
             else
             {
-                sound.stop();
+                beeper.stop();
             }
         } 
     }
@@ -162,6 +161,5 @@ int main()
     {
         std::cout << "Error: " << NFD::GetError() << std::endl;
     }
-    chip8.mem_dump(std::cerr);
     return 0; 
 }

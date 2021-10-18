@@ -75,7 +75,7 @@ void Chip8::update(sf::Time delta_t)
     while (timer_elapsed_t >= one_over_60)
     {
         timer_delay = ((timer_delay > 0) ? timer_delay - 1 : 0);
-        timer_delay = ((timer_sound > 0) ? timer_sound - 1 : 0);
+        timer_sound = ((timer_sound > 0) ? timer_sound - 1 : 0);
         timer_elapsed_t -= one_over_60;
     }
     clock_elapsed_t += delta_t;
@@ -202,17 +202,23 @@ void Chip8::FDE()
         case 0xA: // ANNN: set the index register I to NNN
             I = ins.NNN();
             break;
-        case 0xB:
-            raise(Chip8::Exception::INVALID_INSTRUCTION);
+        case 0xB: // BXNN: Jump with offset
+            // TODO: Legacy mode with BNNN instruction
+            PC = ins.NNN() + V[ins.X()];
             break;
-        case 0xC:
+        case 0xC: // CNNN: Random number generation
             V[ins.X()] = (RNG_distrib(RNG_gen) & ins.NN());
             break;
         case 0xD: // DXYN: display sprite to screen
             display_sprite(V[ins.X()], V[ins.Y()], ins.N());
             break;
-        case 0xE:
-            raise(Chip8::Exception::INVALID_INSTRUCTION);
+        case 0xE: // EXNN: skip if key
+            switch (ins.NN())
+            {
+                case 0x9E: if (key_reg[V[ins.X()]]) PC += 2; break;
+                case 0xA1: if (!key_reg[V[ins.X()]]) PC += 2; break;
+                default: raise(Chip8::Exception::INVALID_INSTRUCTION); break;
+            }
             break;
         case 0xF:
             switch (ins.NN())
@@ -221,6 +227,7 @@ void Chip8::FDE()
             case 0x0A: block = ins.X(); break;
             case 0x15: timer_delay = V[ins.X()]; break; // set delay timer to VX
             case 0x18: timer_sound = V[ins.X()]; break; // set sound timer to VX
+            case 0x1E: I += V[ins.X()]; break; // add to index
             case 0x29: I = font_addr + V[ins.X()] * 5; break; // Font character
             case 0x33: // BCD
                 MEM[I] = V[ins.X()] / 100;
@@ -327,15 +334,15 @@ void Chip8::raise(Chip8::Exception e)
         
         break;
     }
-    std::cerr << "at PC:0x" << std::hex << std::setfill('0') << std::setw(3) << (int)current_PC << ":" 
-        << std::setw(2) << (int)MEM[current_PC] 
-        << std::setw(2) << (int)MEM[current_PC + 1] << std::endl;
     mem_dump(std::cerr);
     interrupt = true;
 }
 
 void Chip8::mem_dump(std::ostream& out)
 {
+    out << "at PC:0x" << std::hex << std::setfill('0') << std::setw(3) << (int)current_PC << ":" 
+        << std::setw(2) << (int)MEM[current_PC] 
+        << std::setw(2) << (int)MEM[current_PC + 1] << std::endl;
     out << std::setw(3) << std::left << std::setfill(' ') << "MEM" << "\t";
     out << std::right;
     for (int i = 0x0; i < 0x10; i += 2)

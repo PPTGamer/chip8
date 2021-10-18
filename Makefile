@@ -22,7 +22,7 @@ SFMLDIR= libs/SFML-2.5.1-MinGW-W64-x86_64-posix-seh-gcc10.2.0
 INC_FLAGS := -I$(SFMLDIR)/include -Ilibs/nativefiledialog-extended/include
 LDFLAGS = -L$(SFMLDIR)/lib -L$(SFMLDIR)/extlibs/libs-mingw/x64 -Llibs/nativefiledialog-extended/lib 
 
-SFML_DEPENDENCIES = -lflac -lvorbisenc -lvorbisfile -lvorbis -logg $(WINDOWS_FLAGS)
+SFML_DEPENDENCIES = -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg $(WINDOWS_FLAGS)
 SFML_MODULES = -lsfml-main -lsfml-network-s -lsfml-audio-s -lsfml-graphics-s -lsfml-window-s  -lsfml-system-s -lnfd
 SFML_DEBUG_MODULES = -lsfml-main-d -lsfml-network-s-d -lsfml-audio-s-d -lsfml-graphics-s-d -lsfml-window-s-d  -lsfml-system-s-d 
 

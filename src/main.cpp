@@ -64,11 +64,11 @@ int main()
                 }
                 if (event.type == sf::Event::KeyPressed)
                 {
-                    
+                    chip8.press_key(0);
                 }
-                if (event.type == sf::Event::KeyPressed)
+                if (event.type == sf::Event::KeyReleased)
                 {
-
+                    chip8.release_key(0);
                 }
             } 
             // update chip 8
@@ -104,6 +104,6 @@ int main()
     {
         std::cout << "Error: " << NFD::GetError() << std::endl;
     }
-
+    chip8.mem_dump(std::cerr);
     return 0; 
 }

@@ -3,8 +3,8 @@ SRC_DIR ?= src/
 BUILD_DIR ?= build/
 EXT:=cpp
 DEBUG_FLAGS = -Og
-RELEASE_FLAGS = -O2 # -mwindows
-
+RELEASE_FLAGS = -O2 
+WINDOWS_FLAGS = -lwinspool -lwinmm -lshell32 -lcomctl32 -lodbc32 -ladvapi32 -lwsock32 -lopengl32 -lglu32 -lole32 -loleaut32 -luuid -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 -lodbc32 -lopengl32 -mwin32
 # https://github.com/LaurentTreguier/Makefile/blob/master/Makefile
 search-dir=$(filter-out $1,$(dir $(wildcard $1*/)))
 # Returns the list of subdirectories in Arg1 directory
@@ -19,11 +19,11 @@ OBJS := $(addsuffix .o,$(basename $(patsubst $(SRC_DIR)%,$(BUILD_DIR)%,$(SRCS)))
 DEPS := $(OBJS:.o=.d)
 
 SFMLDIR= libs/SFML-2.5.1-MinGW-W64-x86_64-posix-seh-gcc10.2.0
-INC_FLAGS := -I$(SFMLDIR)/include 
-LDFLAGS = -L$(SFMLDIR)/lib -L$(SFMLDIR)/extlibs/libs-mingw/x64  
+INC_FLAGS := -I$(SFMLDIR)/include -Ilibs/nativefiledialog-extended/include
+LDFLAGS = -L$(SFMLDIR)/lib -L$(SFMLDIR)/extlibs/libs-mingw/x64 -Llibs/nativefiledialog-extended/lib 
 
-SFML_DEPENDENCIES = -lopengl32 -lfreetype -lwinmm -lgdi32 -lws2_32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg 
-SFML_MODULES = -lsfml-main -lsfml-network-s -lsfml-audio-s -lsfml-graphics-s -lsfml-window-s  -lsfml-system-s 
+SFML_DEPENDENCIES = -lflac -lvorbisenc -lvorbisfile -lvorbis -logg $(WINDOWS_FLAGS)
+SFML_MODULES = -lsfml-main -lsfml-network-s -lsfml-audio-s -lsfml-graphics-s -lsfml-window-s  -lsfml-system-s -lnfd
 SFML_DEBUG_MODULES = -lsfml-main-d -lsfml-network-s-d -lsfml-audio-s-d -lsfml-graphics-s-d -lsfml-window-s-d  -lsfml-system-s-d 
 
 CXXFLAGS_BARE = -std=c++17 -static -DSFML_STATIC -Wall

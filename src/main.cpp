@@ -55,9 +55,9 @@ int main()
     Chip8 chip8;
     // Initialize display
     sf::Color color_on = sf::Color::White;
-    sf::RenderWindow window(sf::VideoMode(200, 200), "CHIP-8 Intepreter by PPTGamer"); 
+    sf::RenderWindow window(sf::VideoMode(640, 320), "CHIP-8 Intepreter by PPTGamer"); 
     sf::RectangleShape rects[CHIP8_DISPLAY_HEIGHT][CHIP8_DISPLAY_WIDTH];
-    float size = 3;
+    float size = 10;
     for (int x = 0; x < CHIP8_DISPLAY_WIDTH; x++)
     {
         for (int y = 0; y < CHIP8_DISPLAY_HEIGHT; y++)

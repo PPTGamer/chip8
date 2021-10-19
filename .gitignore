@@ -32,7 +32,6 @@
 *.app
 
 # Others
-docs/.obsidian/*
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -45,3 +44,5 @@ docs/.obsidian/*
 
 # Project specific
 roms/*
+.obsidian/*
+docs/.obsidian/*

@@ -4,7 +4,7 @@ BUILD_DIR ?= build/
 EXT:=cpp
 DEBUG_FLAGS = -Og
 RELEASE_FLAGS = -O2 
-WINDOWS_FLAGS = -lwinspool -lwinmm -lshell32 -lcomctl32 -lodbc32 -ladvapi32 -lwsock32 -lopengl32 -lglu32 -lole32 -loleaut32 -luuid -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 -lodbc32 -lopengl32 -mwin32
+WINDOWS_FLAGS = -lwinspool -lwinmm -lshell32 -lcomctl32 -lodbc32 -ladvapi32 -lwsock32 -lopengl32 -lglu32 -lole32 -loleaut32 -luuid -lkernel32 -luser32 -lgdi32 -lcomdlg32 -mwin32
 # https://github.com/LaurentTreguier/Makefile/blob/master/Makefile
 search-dir=$(filter-out $1,$(dir $(wildcard $1*/)))
 # Returns the list of subdirectories in Arg1 directory
@@ -24,7 +24,7 @@ LDFLAGS = -L$(SFMLDIR)/lib -L$(SFMLDIR)/extlibs/libs-mingw/x64 -Llibs/nativefile
 
 SFML_DEPENDENCIES = -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg $(WINDOWS_FLAGS)
 SFML_MODULES = -lsfml-main -lsfml-network-s -lsfml-audio-s -lsfml-graphics-s -lsfml-window-s  -lsfml-system-s -lnfd
-SFML_DEBUG_MODULES = -lsfml-main-d -lsfml-network-s-d -lsfml-audio-s-d -lsfml-graphics-s-d -lsfml-window-s-d  -lsfml-system-s-d 
+SFML_DEBUG_MODULES = -lsfml-main-d -lsfml-network-s-d -lsfml-audio-s-d -lsfml-graphics-s-d -lsfml-window-s-d  -lsfml-system-s-d -lnfd-d
 
 CXXFLAGS_BARE = -std=c++17 -static -DSFML_STATIC -Wall
 CXXFLAGS = $(CXXFLAGS_BARE)
